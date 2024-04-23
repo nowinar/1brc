@@ -10,29 +10,39 @@ typedef struct {
     float avg;
 } CityTemperature;
 
-float getMin(float a, float b){
-    if(a<b){
-        return a;
-    }else{
-        return b;
+float* getMinMaxAvgFromArray(float a[1000]){
+    float pocet = sizeof(a) / sizeof(a[0]);
+    float soucet = 0;
+    float min = a[0];
+    float max = a[0];
+
+    for(int i = 0; i<pocet; i++)
+    {
+        float actual = a[i];
+        if(actual<min){
+            min = actual;
+        }
+        if(actual>max){
+            max = actual;
+        }
+        soucet+=actual;
     }
-}
-float getMax(float a, float b){
-    if(a<b){
-        return b;
-    }else{
-        return a;
-    }
+    float* resp = malloc(3 * sizeof(float));
+    resp[0] = min;
+    resp[1] = max;
+    resp[2] = soucet/pocet;
+    return resp;
 }
 
 int main(){
 
     FILE *file;
-    char *filename = "../measurements.txt";
+    char *filename = "./measurements.txt";
     char buffer[1024];
     char mesto[100]; // Proměnná pro uložení názvu města
     char teplota[100]; // Proměnná pro uložení teploty
     CityTemperature Array[1000];
+    CityTemperature Final[1000];
     int count = 0;
     file = fopen(filename, "r");
     while(fgets(buffer, sizeof(buffer), file) != NULL){
@@ -56,11 +66,13 @@ int main(){
     for(int i = 0; i<= count; i++){
         char city[100];
         strncpy(city, Array[i].city, sizeof(city));
+        float nums[1000];
         for(int d = 0; d<=count; d++){
             if(Array[d].city == city){
-                
+                nums[d] = Array[d].temperature;
             }
         }
+        getMinMaxAvgFromArray(nums);
     }
     fclose(file);
     return 0;
