@@ -48,6 +48,7 @@ int main(){
     while(fgets(buffer, sizeof(buffer), file) != NULL){
         char *token = strtok(buffer, ";\n");
         if (token != NULL) {
+            //printf("%s\n", token);
             strncpy(mesto, token, sizeof(mesto)); // Uložení prvního tokenu do proměnné mesto
             mesto[sizeof(mesto) - 1] = '\0';
             
@@ -60,19 +61,28 @@ int main(){
             strncpy(teplota, token, sizeof(teplota)); // Uložení druhého tokenu do proměnné teplota
         }
         Array[count].temperature = atof(teplota);
-        printf("Mesto: %s, Teplota: %f, real: %s\n", Array[count].city, Array[count].temperature, teplota);
+        //printf("Mesto: %s, Teplota: %f, real: %s\n", Array[count].city, Array[count].temperature, teplota);
         count++;
     }
+    printf("%d", count);
     for(int i = 0; i<= count; i++){
         char city[100];
         strncpy(city, Array[i].city, sizeof(city));
         float nums[1000];
         for(int d = 0; d<=count; d++){
-            if(Array[d].city == city){
+            //printf("%s\n",city);
+            if(strcmp(Array[d].city, city) == 0){
+                printf("%f\n", Array[d].temperature);
                 nums[d] = Array[d].temperature;
             }
         }
-        getMinMaxAvgFromArray(nums);
+        float* vys = getMinMaxAvgFromArray(nums);
+        strncpy(Final[i].city, city, sizeof(city));
+
+        printf("Mesto: %s, prumer: %f, min: %f, max:%f\n", city, vys[2],vys[0],vys[1]);
+        //Final[i].min = vys[0];
+        //Final[i].max = vys[1];
+        //Final[i].avg = vys[2];
     }
     fclose(file);
     return 0;
