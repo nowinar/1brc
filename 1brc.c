@@ -42,9 +42,10 @@ int main(){
     char buffer[1024];
     char mesto[100]; // Proměnná pro uložení názvu města
     char teplota[100]; // Proměnná pro uložení teploty
-    CityTemperature Array[1000];
-    CityTemperature Final[1000];
+    CityTemperature* Array = malloc(1 * sizeof(CityTemperature));
+    
     int count = 0;
+    //loading
     file = fopen(filename, "r");
     while(fgets(buffer, sizeof(buffer), file) != NULL){
         char *token = strtok(buffer, ";\n");
@@ -64,7 +65,9 @@ int main(){
         Array[count].temperature = atof(teplota);
         //printf("Mesto: %s, Teplota: %f, real: %s\n", Array[count].city, Array[count].temperature, teplota);
         count++;
+        Array = realloc(Array, (count + 1) * sizeof(CityTemperature));
     }
+    fclose(file);
     //printf("%d", count);
     for(int i = 0; i<= count; i++){
         char city[100];
@@ -82,13 +85,8 @@ int main(){
             }
         }
         float* vys = getMinMaxAvgFromArray(nums, numsCount);
-        //strncpy(Final[i].city, city, sizeof(city));
 
         printf("Mesto: %s, prumer: %f, min: %f, max:%f\n", city, vys[2],vys[0],vys[1]);
-        //Final[i].min = vys[0];
-        //Final[i].max = vys[1];
-        //Final[i].avg = vys[2];
     }
-    fclose(file);
     return 0;
 }
