@@ -10,8 +10,9 @@ typedef struct {
     float avg;
 } CityTemperature;
 
-float* getMinMaxAvgFromArray(float a[1000]){
-    float pocet = sizeof(a) / sizeof(a[0]);
+float* getMinMaxAvgFromArray(float a[1000], int count){
+    float pocet = (float)count;
+    
     float soucet = 0;
     float min = a[0];
     float max = a[0];
@@ -64,20 +65,24 @@ int main(){
         //printf("Mesto: %s, Teplota: %f, real: %s\n", Array[count].city, Array[count].temperature, teplota);
         count++;
     }
-    printf("%d", count);
+    //printf("%d", count);
     for(int i = 0; i<= count; i++){
         char city[100];
         strncpy(city, Array[i].city, sizeof(city));
+        int numsCount = 0;
         float nums[1000];
-        for(int d = 0; d<=count; d++){
+        int d;
+        for(d = 0; d<=count; d++){
             //printf("%s\n",city);
+
             if(strcmp(Array[d].city, city) == 0){
-                printf("%f\n", Array[d].temperature);
-                nums[d] = Array[d].temperature;
+                //printf("%f\n", Array[d].temperature);
+                nums[numsCount] = Array[d].temperature;
+                numsCount++;
             }
         }
-        float* vys = getMinMaxAvgFromArray(nums);
-        strncpy(Final[i].city, city, sizeof(city));
+        float* vys = getMinMaxAvgFromArray(nums, numsCount);
+        //strncpy(Final[i].city, city, sizeof(city));
 
         printf("Mesto: %s, prumer: %f, min: %f, max:%f\n", city, vys[2],vys[0],vys[1]);
         //Final[i].min = vys[0];
