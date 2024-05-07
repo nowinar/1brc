@@ -78,22 +78,26 @@ int main(){
     char **cities = malloc(1 * sizeof(char *));
     int citiesCount = 0;
     //printf("%d", count);
+    //,,logical" error - its stuck before end, because there is a lot of stuff that it went already through
     for(int i = 0; i<= count; i++){
         char city[100];
         strncpy(city, Array[i].city, sizeof(city));
+        //printf(" original %s", Array[i].city);
         //till here cities are allright
         //printf("%s start\n", Array[i].city);
         int numsCount = 0;
-        float nums[1000];
+        float* nums = malloc(1 * sizeof(float));
         int d;
         //printf("%s\n", city);
         bool ShouldFind = false;
+        //was currentcity checked?
         for(int j = 0; j<citiesCount; j++){
             if(strcmp(city, cities[j]) == 0){
                 //printf("%s", city);
                 ShouldFind = true;
             }
         }
+        //do stuff
         if(!ShouldFind){
             //printf("%s start\n%s\n", Array[i].city, city);
             for(d = 0; d<=count; d++){
@@ -102,8 +106,10 @@ int main(){
                     //printf("%f\n", Array[d].temperature);
                     nums[numsCount] = Array[d].temperature;
                     numsCount++;
+                    nums = realloc(nums, (numsCount * sizeof(float))+1);
                 }
             }
+            //printf("cisla: %d",numsCount);
             float* vys = getMinMaxAvgFromArray(nums, numsCount);
 
             printf("Mesto: %s, prumer: %f, min: %f, max:%f\n", city, vys[2],vys[0],vys[1]);
@@ -112,10 +118,10 @@ int main(){
             citiesCount++;
             printf("%d",citiesCount);
             }
-        
     }
+    
     clock_gettime(CLOCK_MONOTONIC, &end);
-
+    
     // Výpočet uplynulého času v milisekundách
     elapsed_time = (end.tv_sec - start.tv_sec) * 1000 + (end.tv_nsec - start.tv_nsec) / 1000000;
     printf("\n%lldms\n", elapsed_time);
