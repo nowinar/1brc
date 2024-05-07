@@ -36,6 +36,29 @@ float* getMinMaxAvgFromArray(float a[1000], int count){
     return resp;
 }
 
+CityTemperature* load(CityTemperature* Array, char buffer[1024], int count){
+    char *token = strtok(buffer, ";\n");
+    char mesto[100]; // Proměnná pro uložení názvu města
+    char teplota[100]; // Proměnná pro uložení teploty
+    if (token != NULL) {
+        //printf("%s\n", token);
+        strncpy(mesto, token, sizeof(mesto)); // Uložení prvního tokenu do proměnné mesto
+        mesto[sizeof(mesto) - 1] = '\0';
+        
+        strncpy(Array[count].city, mesto, sizeof(Array[count].city)); // Kopírování města do struktury
+        Array[count].city[sizeof(Array[count].city) - 1] = '\0'; // Zajištění ukončení řetězce
+
+        token = strtok(NULL, ";\n");
+    }
+    if (token != NULL) {
+        strncpy(teplota, token, sizeof(teplota)); // Uložení druhého tokenu do proměnné teplota
+    }
+    Array[count].temperature = atof(teplota);
+    //printf("Mesto: %s, Teplota: %f, real: %s\n", Array[count].city, Array[count].temperature, teplota);
+    count++;
+    return realloc(Array, (count + 1) * sizeof(CityTemperature));
+}
+
 int main(){
     //time measuring
     struct timespec start, end;
@@ -47,32 +70,15 @@ int main(){
     FILE *file;
     char *filename = "./measurements.txt";
     char buffer[1024];
-    char mesto[100]; // Proměnná pro uložení názvu města
-    char teplota[100]; // Proměnná pro uložení teploty
+    
     CityTemperature* Array = malloc(1 * sizeof(CityTemperature));
     
     int count = 0;
     //loading
     file = fopen(filename, "r");
     while(fgets(buffer, sizeof(buffer), file) != NULL){
-        char *token = strtok(buffer, ";\n");
-        if (token != NULL) {
-            //printf("%s\n", token);
-            strncpy(mesto, token, sizeof(mesto)); // Uložení prvního tokenu do proměnné mesto
-            mesto[sizeof(mesto) - 1] = '\0';
-            
-            strncpy(Array[count].city, mesto, sizeof(Array[count].city)); // Kopírování města do struktury
-            Array[count].city[sizeof(Array[count].city) - 1] = '\0'; // Zajištění ukončení řetězce
-
-            token = strtok(NULL, ";\n");
-        }
-        if (token != NULL) {
-            strncpy(teplota, token, sizeof(teplota)); // Uložení druhého tokenu do proměnné teplota
-        }
-        Array[count].temperature = atof(teplota);
-        //printf("Mesto: %s, Teplota: %f, real: %s\n", Array[count].city, Array[count].temperature, teplota);
-        count++;
-        Array = realloc(Array, (count + 1) * sizeof(CityTemperature));
+        Array = load(Array, buffer, count);
+        count ++;
     }
     fclose(file);
     char **cities = malloc(1 * sizeof(char *));
